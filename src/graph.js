@@ -101,8 +101,7 @@ export function initGraph(canvasEl, minimapEl, data, callbacks) {
     .force('x', forceX(centerX).strength(0.015))
     .force('y', forceY(centerY).strength(0.015))
     .alphaDecay(0.015)
-    .velocityDecay(0.35)
-    .on('tick', render);
+    .velocityDecay(0.35);
 
   // Start with low alpha since we have saved positions
   simulation.alpha(0.3).restart();
@@ -132,8 +131,12 @@ export function initGraph(canvasEl, minimapEl, data, callbacks) {
   // Window resize
   window.addEventListener('resize', handleResize);
 
-  // Start render loop
-  render();
+  // Start continuous render loop
+  function loop() {
+    render();
+    animationFrame = requestAnimationFrame(loop);
+  }
+  loop();
 }
 
 function resize() {
