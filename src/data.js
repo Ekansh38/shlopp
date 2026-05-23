@@ -227,6 +227,14 @@ export function createPost(text, parentIds) {
   return post;
 }
 
+export function addConnectionToPost(sourceId, targetId) {
+  // Check if connection already exists
+  const exists = connections.some(c => c.source === sourceId && c.target === targetId);
+  if (exists) return false;
+  connections.push({ source: sourceId, target: targetId });
+  return true;
+}
+
 export function editPost(postId, newText) {
   const post = posts.find(p => p.id === postId);
   if (!post || post.author !== currentUser) return false;

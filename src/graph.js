@@ -100,11 +100,13 @@ export function initGraph(canvasEl, minimapEl, data, callbacks) {
     )
     .force('x', forceX(centerX).strength(0.015))
     .force('y', forceY(centerY).strength(0.015))
-    .alphaDecay(0.015)
-    .velocityDecay(0.35);
+    .alphaDecay(0.008)
+    .alphaMin(0.005)
+    .alphaTarget(0.008)
+    .velocityDecay(0.4);
 
-  // Start with low alpha since we have saved positions
-  simulation.alpha(0.3).restart();
+  // Start with higher alpha for initial layout, then settle into gentle jiggle
+  simulation.alpha(0.4).restart();
 
   // Setup zoom
   zoomBehavior = zoom()
@@ -528,15 +530,17 @@ export function clearHighlights() {
   selectedNode = null;
 }
 
-export function addNode(nodeData, newEdges) {
-  // Find position near first parent
-  const parentEdge = newEdges[0];
-  const parentNode = nodes.find(n => n.id === parentEdge.target);
-  const x = parentNode ? parentNode.x + (Math.random() - 0.5) * 100 : width / 2;
-  const y = parentNode ? parentNode.y + (Math.random() - 0.5) * 100 : height / 2;
+export function addNode(nodeData, newEdges, edgesOnly = false) {
+  if (!edgesOnly && nodeData) {
+    // Find position near first parent
+    const parentEdge = newEdges[0];
+    const parentNode = nodes.find(n => n.id === parentEdge.target);
+    const x = parentNode ? parentNode.x + (Math.random() - 0.5) * 100 : width / 2;
+    const y = parentNode ? parentNode.y + (Math.random() - 0.5) * 100 : height / 2;
 
-  const node = { ...nodeData, x, y };
-  nodes.push(node);
+    const node = { ...nodeData, x, y };
+    nodes.push(node);
+  }
 
   for (const e of newEdges) {
     edges.push({ ...e });

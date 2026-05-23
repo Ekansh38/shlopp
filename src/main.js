@@ -82,6 +82,11 @@ function init() {
     onEdit: (post) => {
       openEdit(post);
     },
+    onLinkAdded: (sourceId, targetId) => {
+      // Add edge to graph visualization
+      addNode(null, [{ source: sourceId, target: targetId }], true);
+      rebuildIndex();
+    },
   });
 
   // Compose
