@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>shlopp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- Top bar -->
+  <header id="topbar">
+    <div class="topbar-left">
+      <a href="/" class="logo">shlopp</a>
+    </div>
+    <div class="topbar-center">
+      <div class="view-toggle">
+        <button id="btn-graph" class="view-btn active">graph</button>
+        <button id="btn-feed" class="view-btn">feed</button>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div id="search-container">
+        <input type="text" id="search-input" placeholder="search" autocomplete="off" spellcheck="false" />
+        <div id="search-results" class="hidden"></div>
+      </div>
+      <button id="btn-compose" class="icon-btn" title="new post">+</button>
+      <button id="btn-theme" class="icon-btn" title="toggle theme"></button>
+      <button id="btn-auth" class="icon-btn" title="account"></button>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main id="app">
+    <!-- Graph view -->
+    <div id="graph-view" class="view active">
+      <canvas id="graph-canvas"></canvas>
+      <div id="graph-controls">
+        <button id="btn-zoom-in" class="ctrl-btn">+</button>
+        <button id="btn-zoom-out" class="ctrl-btn">&minus;</button>
+        <button id="btn-zoom-fit" class="ctrl-btn">&#8281;</button>
+      </div>
+      <canvas id="minimap-canvas"></canvas>
+    </div>
+
+    <!-- Feed view -->
+    <div id="feed-view" class="view">
+      <div id="feed-container"></div>
+    </div>
+  </main>
+
+  <!-- Sidebar (post detail) -->
+  <aside id="sidebar" class="closed">
+    <button id="sidebar-close" class="icon-btn">&times;</button>
+    <div id="sidebar-content"></div>
+  </aside>
+
+  <!-- Compose modal -->
+  <div id="compose-overlay" class="overlay hidden">
+    <div id="compose-modal" class="modal">
+      <div class="modal-header">
+        <h2>new post</h2>
+        <button id="compose-close" class="icon-btn">&times;</button>
+      </div>
+      <div id="compose-body"></div>
+    </div>
+  </div>
+
+  <!-- Auth modal -->
+  <div id="auth-overlay" class="overlay hidden">
+    <div id="auth-modal" class="modal">
+      <div class="modal-header">
+        <h2 id="auth-title">log in</h2>
+        <button id="auth-close" class="icon-btn">&times;</button>
+      </div>
+      <div id="auth-body"></div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
