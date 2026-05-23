@@ -266,7 +266,10 @@ function handleMouseUp(e) {
 }
 
 function handleClick(e) {
-  if (dragStarted) return; // Was a drag, not a click
+  if (dragStarted) {
+    dragStarted = false;
+    return;
+  }
   const rect = canvas.getBoundingClientRect();
   const sx = e.clientX - rect.left;
   const sy = e.clientY - rect.top;
@@ -276,7 +279,9 @@ function handleClick(e) {
     selectedNode = node;
     if (onNodeClick) onNodeClick(node);
   } else {
+    // Clicked background — deselect
     selectedNode = null;
+    hoveredNode = null;
     if (onNodeClick) onNodeClick(null);
   }
 }
