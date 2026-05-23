@@ -239,10 +239,15 @@ function handleMouseDown(e) {
 
 function handleMouseUp(e) {
   if (draggedNode) {
-    draggedNode.fx = null;
-    draggedNode.fy = null;
     if (dragStarted) {
+      // Pin the node where it was dropped — stays until refresh
+      draggedNode.fx = draggedNode.x;
+      draggedNode.fy = draggedNode.y;
       simulation.alpha(0.05).restart();
+    } else {
+      // Was just a click, not a drag — release it
+      draggedNode.fx = null;
+      draggedNode.fy = null;
     }
     draggedNode = null;
     dragStarted = false;
