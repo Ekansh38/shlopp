@@ -108,9 +108,20 @@ export function initGraph(canvasEl, minimapEl, data, callbacks) {
   // Start with higher alpha for initial layout, then settle into gentle jiggle
   simulation.alpha(0.4).restart();
 
-  // Setup zoom
+  // Setup zoom — filter out events on nodes so dragging works
   zoomBehavior = zoom()
     .scaleExtent([0.1, 5])
+    .filter((event) => {
+      // Block zoom/pan when mousedown is on a node
+      if (event.type === 'mousedown' || event.type === 'pointerdown') {
+        const rect = canvas.getBoundingClientRect();
+        const sx = event.clientX - rect.left;
+        const sy = event.clientY - rect.top;
+        const node = getNodeAt(sx, sy);
+        if (node) return false; // let node drag handle it
+      }
+      return !event.button; // default: block right-click
+    })
     .on('zoom', (event) => {
       transform = event.transform;
     });
