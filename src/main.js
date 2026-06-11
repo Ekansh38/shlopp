@@ -1,10 +1,10 @@
 // Main entry — wires everything together
 import { getNodesAndEdges, getNode, getSections } from './data.js';
-import { initGraph, focusNode, zoomIn, zoomOut, zoomFit, setHighlightedNodes, clearHighlights, addNode, destroyGraph } from './graph.js';
+import { initGraph, focusNode, zoomIn, zoomOut, zoomFit, setHighlightedNodes, clearHighlights, addNode, resizeGraph, destroyGraph } from './graph.js';
 import { initFeed, renderFeed } from './feed.js';
 import { initSidebar, openSidebar, closeSidebar } from './sidebar.js';
 import { initCompose, openCompose, openEdit, closeCompose } from './compose.js';
-import { initAuth, openAuth, updateAuthButton } from './auth.js';
+import { initAuth, openAuth, closeAuth, updateAuthButton } from './auth.js';
 import { initSearch, rebuildIndex } from './search.js';
 import { initTheme } from './theme.js';
 import './style.css';
@@ -67,6 +67,9 @@ function init() {
       openSidebar(id);
     },
   });
+
+  // Closing the sidebar should also deselect in the graph
+  document.getElementById('sidebar-close').addEventListener('click', clearHighlights);
 
   // Sidebar
   initSidebar(document.getElementById('sidebar'), {
@@ -163,6 +166,7 @@ function init() {
     btnFeed.classList.remove('active');
     graphView.classList.add('active');
     feedView.classList.remove('active');
+    resizeGraph();
   });
 
   btnFeed.addEventListener('click', () => {
@@ -187,15 +191,20 @@ function init() {
 
   // Keyboard shortcuts
   document.addEventListener('keydown', (e) => {
-    // Ignore if typing in an input
+    // Escape works everywhere, even while typing
+    if (e.key === 'Escape') {
+      closeSidebar();
+      closeCompose();
+      closeAuth();
+      clearHighlights();
+      if (e.target.blur) e.target.blur();
+      return;
+    }
+
+    // Ignore other shortcuts if typing in an input
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
     switch (e.key) {
-      case 'Escape':
-        closeSidebar();
-        closeCompose();
-        clearHighlights();
-        break;
       case '1':
         btnGraph.click();
         break;

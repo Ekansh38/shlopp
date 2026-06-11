@@ -70,7 +70,7 @@ function renderFeedItem(post) {
       replyPreview = `
         <div class="feed-reply-context">
           <span class="feed-reply-arrow">&#8627;</span>
-          <span class="feed-reply-to">@${parent.author}:</span>
+          <span class="feed-reply-to">@${escapeHtml(parent.author)}:</span>
           <span class="feed-reply-preview">${escapeHtml(parent.text).slice(0, 60)}${parent.text.length > 60 ? '...' : ''}</span>
         </div>
       `;
@@ -81,7 +81,7 @@ function renderFeedItem(post) {
     <div class="feed-item" data-id="${post.id}">
       ${replyPreview}
       <div class="feed-header">
-        <span class="feed-author">${post.author}</span>
+        <span class="feed-author">${escapeHtml(post.author)}</span>
         <span class="feed-time">${timeAgo(post.timestamp)}</span>
       </div>
       <div class="feed-text">${escapeHtml(post.text)}</div>

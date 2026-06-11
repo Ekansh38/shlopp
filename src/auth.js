@@ -75,7 +75,7 @@ function renderLoggedIn(username) {
 
   bodyEl.innerHTML = `
     <div class="auth-logged-in">
-      <div class="auth-username">${username}</div>
+      <div class="auth-username">${escapeHtml(username)}</div>
       <button class="auth-submit" id="auth-logout">log out</button>
     </div>
   `;
@@ -125,9 +125,23 @@ function showError(el, msg) {
   el.classList.remove('hidden');
 }
 
+const USER_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4.5 20c1.5-3.5 4.2-5 7.5-5s6 1.5 7.5 5" /></svg>';
+
 export function updateAuthButton() {
   const btn = document.getElementById('btn-auth');
   const user = getCurrentUser();
-  btn.textContent = user ? user.slice(0, 2).toUpperCase() : '\u2630';
+  if (user) {
+    btn.textContent = user.slice(0, 2).toLowerCase();
+    btn.classList.add('logged-in');
+  } else {
+    btn.innerHTML = USER_SVG;
+    btn.classList.remove('logged-in');
+  }
   btn.title = user ? user : 'account';
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
 }

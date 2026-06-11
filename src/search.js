@@ -56,6 +56,7 @@ export function rebuildIndex() {
       { name: 'text', weight: 1 },
     ],
     threshold: 0.35,
+    ignoreLocation: true,
     includeMatches: true,
   });
 }
@@ -85,7 +86,7 @@ function handleSearch() {
       <div class="search-result" data-id="${item.id}">
         <div class="search-result-type" ${item.color ? `style="color: ${item.color}"` : ''}>${item.type}</div>
         <div class="search-result-text">${item.type === 'section' ? item.name : escapeHtml(preview)}</div>
-        <div class="search-result-meta">${item.type === 'post' ? `@${item.name}` : item.text}</div>
+        <div class="search-result-meta">${item.type === 'post' ? `@${escapeHtml(item.name)}` : escapeHtml(item.text)}</div>
       </div>
     `;
   }).join('');

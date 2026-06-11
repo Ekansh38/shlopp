@@ -94,7 +94,7 @@ function renderPost(post) {
     </div>
 
     <div class="pane-post-meta">
-      <span class="pane-author">${post.author}</span>
+      <span class="pane-author">${escapeHtml(post.author)}</span>
       <span class="pane-time">${formatTime(post.timestamp)}</span>
       ${post.edits && post.edits.length > 0 ? `<span class="pane-edited">edited ${post.edits.length}x</span>` : ''}
     </div>
@@ -165,7 +165,7 @@ function renderBacklinkCard(post) {
   return `
     <div class="pane-backlink-card" data-id="${post.id}">
       <div class="pane-backlink-header">
-        <span class="pane-backlink-author">${post.author}</span>
+        <span class="pane-backlink-author">${escapeHtml(post.author)}</span>
         <span class="pane-backlink-time">${timeAgo(post.timestamp)}</span>
         ${sections.map(s => `<span class="pane-backlink-tag" style="color: ${s.color}">${s.name}</span>`).join('')}
       </div>
@@ -188,7 +188,7 @@ function renderLinkCard(node, direction) {
   return `
     <div class="pane-link-card" data-id="${node.id}">
       <div class="pane-link-header">
-        <span class="pane-link-author">${node.author}</span>
+        <span class="pane-link-author">${escapeHtml(node.author)}</span>
         <span class="pane-link-time">${timeAgo(node.timestamp)}</span>
       </div>
       <div class="pane-link-preview">${escapeHtml(node.text).slice(0, 100)}${node.text.length > 100 ? '...' : ''}</div>
@@ -255,6 +255,7 @@ function wireLinkAdder(post) {
   const fuse = new Fuse(allItems, {
     keys: [{ name: 'name', weight: 2 }, { name: 'text', weight: 1 }],
     threshold: 0.4,
+    ignoreLocation: true,
   });
 
   searchInput.addEventListener('input', () => {
@@ -270,7 +271,7 @@ function wireLinkAdder(post) {
       if (item.type === 'section') {
         return `<div class="pane-link-result" data-id="${item.id}"><span class="pane-link-dot" style="background: ${item.color}"></span> ${item.name}</div>`;
       }
-      return `<div class="pane-link-result" data-id="${item.id}"><strong>${item.name}</strong>: ${escapeHtml(item.text).slice(0, 50)}...</div>`;
+      return `<div class="pane-link-result" data-id="${item.id}"><strong>${escapeHtml(item.name)}</strong>: ${escapeHtml(item.text).slice(0, 50)}...</div>`;
     }).join('');
 
     resultsEl.querySelectorAll('.pane-link-result').forEach(el => {

@@ -434,14 +434,19 @@ function render() {
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(node.name, node.x, node.y + node.radius + 20);
-    } else if (transform.k > 1.2 || isHovered || isSelected || isSearchHit) {
-      // Show post labels when zoomed in or active
-      ctx.font = '400 11px "Roboto Mono", monospace';
-      ctx.fillStyle = labelMuted;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      const label = node.author || node.id;
-      ctx.fillText(label, node.x, node.y + node.radius + 14);
+    } else {
+      // Post labels fade in as you zoom; always visible when active
+      const zoomFade = Math.min(Math.max((transform.k - 0.9) / 0.5, 0), 1);
+      const labelAlpha = (isHovered || isSelected || isSearchHit) ? 1 : zoomFade;
+      if (labelAlpha > 0.02) {
+        ctx.globalAlpha = baseAlpha * labelAlpha;
+        ctx.font = '400 11px "Roboto Mono", monospace';
+        ctx.fillStyle = labelMuted;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const label = node.author || node.id;
+        ctx.fillText(label, node.x, node.y + node.radius + 14);
+      }
     }
 
     ctx.globalAlpha = 1;
@@ -552,6 +557,7 @@ export function clearHighlights() {
 }
 
 export function addNode(nodeData, newEdges, edgesOnly = false) {
+  let node = null;
   if (!edgesOnly && nodeData) {
     // Find position near first parent
     const parentEdge = newEdges[0];
@@ -559,7 +565,7 @@ export function addNode(nodeData, newEdges, edgesOnly = false) {
     const x = parentNode ? parentNode.x + (Math.random() - 0.5) * 100 : width / 2;
     const y = parentNode ? parentNode.y + (Math.random() - 0.5) * 100 : height / 2;
 
-    const node = { ...nodeData, x, y };
+    node = { ...nodeData, x, y };
     nodes.push(node);
   }
 
@@ -577,6 +583,10 @@ export function addNode(nodeData, newEdges, edgesOnly = false) {
 
 export function getSelectedNode() {
   return selectedNode;
+}
+
+export function resizeGraph() {
+  handleResize();
 }
 
 export function destroyGraph() {

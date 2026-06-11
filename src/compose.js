@@ -1,5 +1,6 @@
 // Compose — new post creation modal
 import { getSections, getPosts, createPost, editPost, getCurrentUser, getConnectionsForNode, getNode } from './data.js';
+import { openAuth } from './auth.js';
 import Fuse from 'fuse.js';
 
 let overlayEl = null;
@@ -23,11 +24,23 @@ export function initCompose(callbacks) {
   overlayEl.addEventListener('click', (e) => {
     if (e.target === overlayEl) closeCompose();
   });
+
+  // Delegated handler for removing selected links (wired once, not per render)
+  bodyEl.addEventListener('click', (e) => {
+    const removeId = e.target.dataset?.remove;
+    if (removeId) {
+      selectedPosts.delete(removeId);
+      updateSelectedLinks();
+      const textarea = document.getElementById('compose-textarea');
+      const submitBtn = document.getElementById('compose-submit');
+      if (textarea && submitBtn) submitBtn.disabled = !canSubmit(textarea.value);
+    }
+  });
 }
 
 export function openCompose(replyToId = null) {
   if (!getCurrentUser()) {
-    alert('log in first');
+    openAuth();
     return;
   }
 
@@ -113,7 +126,7 @@ function renderComposeBody(initialText) {
         const node = getNode(id);
         return node ? `
           <div class="compose-selected-link" data-id="${id}">
-            <span>@${node.author}: ${escapeHtml(node.text).slice(0, 30)}...</span>
+            <span>@${escapeHtml(node.author)}: ${escapeHtml(node.text).slice(0, 30)}...</span>
             <button data-remove="${id}">&times;</button>
           </div>
         ` : '';
@@ -166,6 +179,7 @@ function renderComposeBody(initialText) {
   const fuse = new Fuse(posts, {
     keys: ['text', 'author'],
     threshold: 0.4,
+    ignoreLocation: true,
   });
 
   linkSearch.addEventListener('input', () => {
@@ -178,7 +192,7 @@ function renderComposeBody(initialText) {
     const results = fuse.search(query).slice(0, 8);
     linkResults.innerHTML = results.map(r => `
       <div class="compose-link-result" data-id="${r.item.id}">
-        <strong>${r.item.author}</strong>: ${escapeHtml(r.item.text).slice(0, 60)}...
+        <strong>${escapeHtml(r.item.author)}</strong>: ${escapeHtml(r.item.text).slice(0, 60)}...
       </div>
     `).join('');
 
@@ -192,16 +206,6 @@ function renderComposeBody(initialText) {
         submitBtn.disabled = !canSubmit(textarea.value);
       });
     });
-  });
-
-  // Remove selected links
-  bodyEl.addEventListener('click', (e) => {
-    const removeId = e.target.dataset?.remove;
-    if (removeId) {
-      selectedPosts.delete(removeId);
-      updateSelectedLinks();
-      submitBtn.disabled = !canSubmit(textarea.value);
-    }
   });
 
   // Submit
@@ -228,7 +232,7 @@ function updateSelectedLinks() {
     const node = getNode(id);
     return node ? `
       <div class="compose-selected-link" data-id="${id}">
-        <span>@${node.author}: ${escapeHtml(node.text).slice(0, 30)}...</span>
+        <span>@${escapeHtml(node.author)}: ${escapeHtml(node.text).slice(0, 30)}...</span>
         <button data-remove="${id}">&times;</button>
       </div>
     ` : '';

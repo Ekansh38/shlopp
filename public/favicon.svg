@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <style>
+    .edge { stroke: #555; stroke-width: 2.5; stroke-linecap: round; }
+    .node { fill: #d4d4d4; }
+    @media (prefers-color-scheme: light) {
+      .edge { stroke: #999; }
+      .node { fill: #1a1a1a; }
+    }
+  </style>
+  <line class="edge" x1="19" y1="17" x2="45" y2="29" />
+  <line class="edge" x1="45" y1="29" x2="25" y2="49" />
+  <line class="edge" x1="19" y1="17" x2="25" y2="49" />
+  <circle class="node" cx="19" cy="17" r="9" />
+  <circle cx="45" cy="29" r="7" fill="#4a9eff" />
+  <circle class="node" cx="25" cy="49" r="6" />
+</svg>

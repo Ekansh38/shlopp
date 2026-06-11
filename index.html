@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>shlopp</title>
+  <title>shlopp — the graph</title>
+  <meta name="description" content="shlopp — an anonymous discussion graph. every post links to something. explore the map." />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta property="og:title" content="shlopp" />
+  <meta property="og:description" content="an anonymous discussion graph. every post links to something." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -12,7 +18,17 @@
   <!-- Top bar -->
   <header id="topbar">
     <div class="topbar-left">
-      <a href="/" class="logo">shlopp</a>
+      <a href="/" class="logo">
+        <svg class="logo-mark" viewBox="0 0 64 64" aria-hidden="true">
+          <line x1="19" y1="17" x2="45" y2="29" />
+          <line x1="45" y1="29" x2="25" y2="49" />
+          <line x1="19" y1="17" x2="25" y2="49" />
+          <circle cx="19" cy="17" r="9" />
+          <circle cx="45" cy="29" r="7" fill="#4a9eff" stroke="none" />
+          <circle cx="25" cy="49" r="6" />
+        </svg>
+        <span>shlopp</span>
+      </a>
     </div>
     <div class="topbar-center">
       <div class="view-toggle">
@@ -25,9 +41,11 @@
         <input type="text" id="search-input" placeholder="search" autocomplete="off" spellcheck="false" />
         <div id="search-results" class="hidden"></div>
       </div>
-      <button id="btn-compose" class="icon-btn" title="new post">+</button>
-      <button id="btn-theme" class="icon-btn" title="toggle theme"></button>
-      <button id="btn-auth" class="icon-btn" title="account"></button>
+      <button id="btn-compose" class="icon-btn" title="new post (n)" aria-label="new post">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+      </button>
+      <button id="btn-theme" class="icon-btn" title="toggle theme" aria-label="toggle theme"></button>
+      <button id="btn-auth" class="icon-btn" title="account" aria-label="account"></button>
     </div>
   </header>
 
@@ -37,11 +55,25 @@
     <div id="graph-view" class="view active">
       <canvas id="graph-canvas"></canvas>
       <div id="graph-controls">
-        <button id="btn-zoom-in" class="ctrl-btn">+</button>
-        <button id="btn-zoom-out" class="ctrl-btn">&minus;</button>
-        <button id="btn-zoom-fit" class="ctrl-btn">&#8281;</button>
+        <button id="btn-zoom-in" class="ctrl-btn" title="zoom in" aria-label="zoom in">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+        </button>
+        <button id="btn-zoom-out" class="ctrl-btn" title="zoom out" aria-label="zoom out">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" /></svg>
+        </button>
+        <button id="btn-zoom-fit" class="ctrl-btn" title="fit view (f)" aria-label="fit view">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
+          </svg>
+        </button>
       </div>
       <canvas id="minimap-canvas"></canvas>
+      <div id="graph-hints">
+        <span><b>n</b> new post</span>
+        <span><b>/</b> search</span>
+        <span><b>f</b> fit</span>
+        <span><b>1/2</b> views</span>
+      </div>
     </div>
 
     <!-- Feed view -->
@@ -52,7 +84,7 @@
 
   <!-- Sidebar (post detail) -->
   <aside id="sidebar" class="closed">
-    <button id="sidebar-close" class="icon-btn">&times;</button>
+    <button id="sidebar-close" class="icon-btn" aria-label="close">&times;</button>
     <div id="sidebar-content"></div>
   </aside>
 
@@ -61,7 +93,7 @@
     <div id="compose-modal" class="modal">
       <div class="modal-header">
         <h2>new post</h2>
-        <button id="compose-close" class="icon-btn">&times;</button>
+        <button id="compose-close" class="icon-btn" aria-label="close">&times;</button>
       </div>
       <div id="compose-body"></div>
     </div>
@@ -72,7 +104,7 @@
     <div id="auth-modal" class="modal">
       <div class="modal-header">
         <h2 id="auth-title">log in</h2>
-        <button id="auth-close" class="icon-btn">&times;</button>
+        <button id="auth-close" class="icon-btn" aria-label="close">&times;</button>
       </div>
       <div id="auth-body"></div>
     </div>
